@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F7 Electronics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <h1>F7 Electronics</h1>
+    </div>
+    <div class="menu">
+        <button class="boton-menu">Menú</button>
+        <div class="contenido_menu">
+            <a href="#productos">Productos</a>
+            <a href="carrito.html">Carrito</a>
+            <a href="#atencion">Atención al Cliente</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section id="productos">
+        <h2>Productos</h2>
+        <div class="productos-grid">
+            <div class="producto">
+                <img src="/Imagenes/S23ULTRAKOROLOS.jpg" alt="Celular 1">
+                <h3>Samsung S23 Ultra</h3>
+                <p>Precio: $1379</p>
+                <button class="agregar-carrito" data-nombre="Samsung S23 Ultra" data-precio="1350">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Iphone 16.jpg" alt="Celular 2">
+                <h3>Iphone 16 Pro Max</h3>
+                <p>Precio: $1199</p>
+                <button class="agregar-carrito" data-nombre="Iphone 16 Pro Max" data-precio="1200">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Computador 1.png" alt="Computador 1">
+                <h3>PORTÁTIL ASUS FX507Z</h3>
+                <p>Precio: $850</p>
+                <button class="agregar-carrito" data-nombre="PORTATIL ASUS" data-precio="850">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Computador 2.png" alt="Computador 2">
+                <h3>PORTÁTIL MSI CYBORG </h3>
+                <p>Precio: $1700</p>
+                <button class="agregar-carrito" data-nombre="PORTÁTIL MSI CYBORG " data-precio="1700">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Mouse 1.jpg" alt="Periférico 1">
+                <h3>Mouse Logitech G703 Lightspeed</h3>
+                <p>Precio: $130</p>
+                <button class="agregar-carrito" data-nombre="Mouse Logitech G703 Lightspeed" data-precio="130">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Teclado 2.png" alt="Periférico 2">
+                <h3>Teclado mecánico Corsair compacto K65 RGB RAPIDFIRE</h3>
+                <p>Precio: $170</p>
+                <button class="agregar-carrito" data-nombre="Teclado mecánico Corsair gamer compacto K65 RGB RAPIDFIRE" data-precio="170">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Playstation.jpg" alt="Consola 1">
+                <h3>PlayStation 5 Slim</h3>
+                <p>Precio: $700</p>
+                <button class="agregar-carrito" data-nombre="PlayStation 5 Slim" data-precio="700">Añadir al Carrito</button>
+            </div>
+            <div class="producto">
+                <img src="/Imagenes/Xbox 2.jpg" alt="Consola 2">
+                <h3>Xbox series X</h3>
+                <p>Precio: $850</p>
+                <button class="agregar-carrito" data-nombre="Xbox series X" data-precio="850">Añadir al Carrito</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="atencion">
+        <h2>Atención al Cliente</h2>
+        <div class="atencion-cliente">
+            <label for="mensaje">Escribe tu mensaje:</label>
+            <textarea id="mensaje" rows="4"></textarea>
+            <button id="enviar">Enviar</button>
+            <div id="respuesta"></div>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Menu    
+    const menuButton = document.querySelector('.boton-menu');
+    const menu = document.querySelector('.menu');
+
+    menuButton.addEventListener('click', () => {
+        menu.classList.toggle('show');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
+
+    // Carrito
+    let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+    // Función para agregar productos al carrito
+    document.querySelectorAll('.agregar-carrito').forEach(button => {
+        button.addEventListener('click', () => {
+            const nombre = button.getAttribute('data-nombre');
+            const precio = parseFloat(button.getAttribute('data-precio'));
+            const productoExistente = carrito.find(item => item.nombre === nombre);
+
+            if (productoExistente) {
+                productoExistente.cantidad++;
+                alert(`${nombre} ahora tiene ${productoExistente.cantidad} unidades en el carrito.`);
+            } else {
+                carrito.push({ nombre, precio, cantidad: 1 });
+                alert(`${nombre} añadido al carrito. Precio: $${precio}`);
+            }
+            // Guardar el carrito en localStorage
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+        });
+    });
+
+    // Enviar mensaje
+    document.getElementById('enviar').addEventListener('click', () => {
+        const mensaje = document.getElementById('mensaje').value;
+        if (mensaje) {
+            document.getElementById('respuesta').innerText = 'Te responderemos lo más pronto posible.';
+            document.getElementById('mensaje').value = ''; // Limpiar el textarea
+        }
+    });
+    
+</script>
+</body>
+</html>

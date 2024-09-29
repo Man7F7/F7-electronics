@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - F7 Electronics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+    <div class="logo">
+        <h1>F7 Electronics</h1>
+    </div>
+    <div class="menu">
+        <button class="boton-menu">Menú</button>
+        <div class="contenido_menu">
+            <a href="index.html#productos">Productos</a>
+            <a href="carrito.html">Carrito</a>
+            <a href="index.html#atencion">Atención al Cliente</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section id="carrito">
+        <h2>Tu Carrito</h2>
+        <div class="carrito">
+            <div id="productos-carrito"></div>
+            <div class="total-carrito"></div>
+            <button class="finalizar-compra">Finalizar Compra</button>
+        </div>
+    </section>
+</main>
+
+<script>
+    // Cargar el carrito desde localStorage
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+    const productosCarritoDiv = document.getElementById('productos-carrito');
+    const totalCarritoDiv = document.querySelector('.total-carrito');
+
+    // Mostrar productos en el carrito
+    let total = 0;
+    carrito.forEach((item, index) => {
+        const productoDiv = document.createElement('div');
+        productoDiv.classList.add('producto-carrito');
+        productoDiv.innerHTML = `
+            <h3>${item.nombre}</h3>
+            <p>Precio: $${item.precio}</p>
+            <p>Cantidad: ${item.cantidad}</p>
+            <button class="eliminar-producto" data-index="${index}">Eliminar</button>
+        `;
+        productosCarritoDiv.appendChild(productoDiv);
+        total += item.precio * item.cantidad;
+    });
+
+    totalCarritoDiv.innerText = `Total: $${total}`;
+
+    // Eliminar producto del carrito
+    productosCarritoDiv.addEventListener('click', (e) => {
+        if (e.target.classList.contains('eliminar-producto')) {
+            const index = e.target.getAttribute('data-index');
+            carrito.splice(index, 1); // Eliminar el producto del carrito
+            localStorage.setItem('carrito', JSON.stringify(carrito)); // Actualizar el carrito en localStorage
+            location.reload(); // Recargar la página para reflejar los cambios
+        }
+    });
+
+    // Finalizar compra
+    document.querySelector('.finalizar-compra').addEventListener('click', () => {
+        alert('Compra finalizada. Gracias por tu compra!');
+        localStorage.removeItem('carrito'); // Limpiar el carrito
+        location.reload(); // Recargar la página para reflejar el carrito vacío
+    });
+    // Menu    
+    const menuButton = document.querySelector('.boton-menu');
+    const menu = document.querySelector('.menu');
+
+    menuButton.addEventListener('click', () => {
+        menu.classList.toggle('show');
+    });
+
+    window.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
+</script>
+</body>
+</html>
