@@ -234,3 +234,189 @@ h2 {
     object-fit: cover; /* Recorta la imagen para que llene el espacio sin distorsionar */
     border-radius: 8px; /* Mantiene el borde redondeado */
 }
+
+/* Estilos para dispositivos móviles (pantallas pequeñas) */
+@media only screen and (max-width: 600px) {
+    /* Ajuste de la cuadrícula de productos a una columna en pantallas pequeñas */
+    .productos-grid {
+        grid-template-columns: 1fr; /* 1 columna */
+    }
+
+    /* Ajustar tamaños de imágenes y texto en pantallas pequeñas */
+    .producto img {
+        width: 100px;
+        height: 100px;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .logo h1 {
+        font-size: 18px;
+    }
+
+    .boton-menu {
+        padding: 8px 16px;
+    }
+
+    .producto {
+        padding: 8px;
+    }
+
+    .producto h3 {
+        font-size: 16px;
+    }
+
+    .producto p {
+        font-size: 14px;
+    }
+
+    .atencion-cliente, .carrito {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .finalizar-compra, .eliminar-carrito {
+        padding: 8px 12px;
+    }
+}
+
+/* Estilos para tabletas (pantallas medianas) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+    /* Ajuste de la cuadrícula de productos a dos columnas en pantallas medianas */
+    .productos-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    }
+
+    .producto img {
+        width: 150px;
+        height: 150px;
+    }
+
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .logo h1 {
+        font-size: 22px;
+    }
+
+    .boton-menu {
+        padding: 10px 20px;
+    }
+
+    .producto {
+        padding: 10px;
+    }
+
+    .producto h3 {
+        font-size: 18px;
+    }
+
+    .producto p {
+        font-size: 16px;
+    }
+
+    .atencion-cliente, .carrito {
+        padding: 15px;
+        margin: 15px;
+    }
+
+    .finalizar-compra, .eliminar-carrito {
+        padding: 10px 15px;
+    }
+}
+
+/* Estilos para pantallas grandes (escritorio y computadoras) */
+@media only screen and (min-width: 1025px) {
+    /* Ajuste de la cuadrícula de productos a tres columnas en pantallas grandes */
+    .productos-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+    }
+
+    .producto img {
+        width: 200px;
+        height: 200px;
+    }
+
+    header {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .logo h1 {
+        font-size: 24px;
+    }
+
+    .boton-menu {
+        padding: 12px 24px;
+    }
+
+    .producto {
+        padding: 15px;
+    }
+
+    .producto h3 {
+        font-size: 20px;
+    }
+
+    .producto p {
+        font-size: 18px;
+    }
+
+    .atencion-cliente, .carrito {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    .finalizar-compra, .eliminar-carrito {
+        padding: 12px 20px;
+    }
+}
+/* Asegurarse de que el menú ocupe todo el ancho de la pantalla en dispositivos móviles */
+.menu {
+    position: relative; /* Cambiado de absolute a relative */
+    z-index: 1000; /* Para que esté encima de otros elementos */
+}
+
+/* Ajustar el contenido del menú desplegable */
+.contenido_menu {
+    display: none; /* Sigue siendo oculto por defecto */
+    position: absolute;
+    right: 0;
+    top: 40px; /* Aseguramos que se despliegue debajo del botón */
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    overflow-y: auto; /* Añadimos scroll en caso de que el contenido sea muy grande */
+    max-height: 90vh; /* Evita que el menú ocupe más del 90% del alto de la pantalla */
+}
+
+/* Mostrar el menú cuando se hace clic */
+.menu.show .contenido_menu {
+    display: block;
+}
+
+/* Estilo de los enlaces del menú para adaptarse mejor */
+.contenido_menu a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    white-space: nowrap; /* Evitar que el texto se rompa en varias líneas */
+}
+
+.contenido_menu a:hover {
+    background-color: #f1f1f1;
+}
+@media only screen and (max-width: 600px) {
+    .contenido_menu {
+        width: 100vw; /* El menú ocupará todo el ancho de la pantalla en móviles */
+        left: 0;
+        right: 0;
+    }
+}
