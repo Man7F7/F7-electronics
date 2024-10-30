@@ -49,10 +49,23 @@ const Orden = sequelize.define('Orden', {
         allowNull: false,
     },
 });
+// Definición del modelo de Carrito
+const Carrito = sequelize.define('Carrito', {
+    cantidad: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+});
 
 // Definir las relaciones
 Usuario.hasMany(Orden);
 Orden.belongsTo(Usuario);
+
+Orden.hasMany(Carrito);
+Carrito.belongsTo(Orden);
+
+Producto.hasMany(Carrito);
+Carrito.belongsTo(Producto);
 
 // Sincronizar la base de datos
 const initDb = async () => {
@@ -63,5 +76,5 @@ const initDb = async () => {
 initDb();
 
 // Exportar los modelos y la instancia de sequelize
-module.exports = { sequelize, Producto, Usuario, Orden };
+module.exports = { sequelize, Producto, Usuario, Orden, Carrito };
 
