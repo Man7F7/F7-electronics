@@ -1,17 +1,23 @@
-const express = require('express'); // Importa express con require
-
+const express = require('express'); // Cambiado a express
+const { sequelize } = require('./models'); // Asegúrate de que la instancia sequelize esté exportada correctamente en tu modelo
+const rutas = require('./routes');
 const app = express();
-const PORT = 3000; // Cambia si necesitas usar otro puerto
+const PORT = 3000;
 
-// Configuración de la carpeta de archivos estáticos (como CSS e imágenes)
-app.use(express.static('public')); 
+// Middleware para servir archivos estáticos
+app.use(express.static('public'));
 
-// Ruta principal
-app.get('/', (req, res) => {
-  res.send('¡Bienvenido a la tienda en línea!');
-});
+// Middleware para las rutas
+app.use(rutas);
 
-// Inicio del servidor
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:3000`);
-});
+// Verificar conexión con la base de datos
+sequelize.authenticate()
+    .then(() => {
+        console.log('Conexión con la base de datos exitosa');
+        app.listen(PORT, () => {
+            console.log(`Servidor corriendo en http://localhost:3000`);
+        });
+    })
+    .catch((error) => {
+        console.error('No se pudo conectar con la base de datos:', error);
+    });

@@ -24,79 +24,8 @@
 <main>
     <section id="productos">
         <h2>Productos</h2>
-        <div class="productos-grid">
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/S23ULTRAKOROLOS.webp" type="image/webp">
-                    <img src="Imagenes/S23ULTRAKOROLOS.webp" alt="S23 ULTRA" loading="lazy">
-                </picture>
-                <h3>Samsung S23 Ultra</h3>
-                <p>Precio: $1379</p>
-                <button class="agregar-carrito" data-nombre="Samsung S23 Ultra" data-precio="1350">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Iphone 16.webp" type="image/webp">
-                    <img src="Imagenes/Iphone 16.webp" alt="Iphone 16" loading="lazy">
-                </picture>                
-                <h3>Iphone 16 Pro Max</h3>
-                <p>Precio: $1199</p>
-                <button class="agregar-carrito" data-nombre="Iphone 16 Pro Max" data-precio="1200">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Computador 1.webp" type="image/webp">
-                    <img src="Imagenes/Computador 1.webp" alt="Computador 1" loading="lazy">
-                </picture>
-                <h3>PORTÁTIL ASUS FX507Z</h3>
-                <p>Precio: $850</p>
-                <button class="agregar-carrito" data-nombre="PORTATIL ASUS" data-precio="850">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Computador 2.webp" type="image/webp">
-                    <img src="Imagenes/Computador 2.webp" alt="Computador 2" loading="lazy">
-                </picture>
-                <h3>PORTÁTIL MSI CYBORG </h3>
-                <p>Precio: $1700</p>
-                <button class="agregar-carrito" data-nombre="PORTÁTIL MSI CYBORG " data-precio="1700">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Mouse 1.webp" type="image/webp">
-                    <img src="Imagenes/Mouse 1.webp" alt="Mouse 1" loading="lazy">
-                </picture>
-                <h3>Mouse Logitech G703 Lightspeed</h3>
-                <p>Precio: $130</p>
-                <button class="agregar-carrito" data-nombre="Mouse Logitech G703 Lightspeed" data-precio="130">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Teclado 2.webp" type="image/webp">
-                    <img src="Imagenes/Teclado 2.webp" alt="Teclado 2" loading="lazy">
-                </picture>
-                <h3>Teclado mecánico Corsair compacto K65 RGB RAPIDFIRE</h3>
-                <p>Precio: $170</p>
-                <button class="agregar-carrito" data-nombre="Teclado mecánico Corsair gamer compacto K65 RGB RAPIDFIRE" data-precio="170">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Playstation.webp" type="image/webp">
-                    <img src="Imagenes/Playstation.webp" alt="Playstation" loading="lazy">
-                </picture>
-                <h3>PlayStation 5 Slim</h3>
-                <p>Precio: $700</p>
-                <button class="agregar-carrito" data-nombre="PlayStation 5 Slim" data-precio="700">Añadir al Carrito</button>
-            </div>
-            <div class="producto">
-                <picture>
-                    <source srcset="Imagenes/Xbox 2.webp" type="image/webp">
-                    <img src="Imagenes/Xbox 2.webp" alt="Xbox 2" loading="lazy">
-                </picture>
-                <h3>Xbox series X</h3>
-                <p>Precio: $850</p>
-                <button class="agregar-carrito" data-nombre="Xbox series X" data-precio="850">Añadir al Carrito</button>
-            </div>
+        <div class="productos-grid" id="productos-lista">
+            <!-- Aquí se insertarán los productos dinámicamente -->
         </div>
     </section>
 
@@ -111,7 +40,82 @@
     </section>
 </main>
 
-<script>const menuButton=document.querySelector('.boton-menu');const menu=document.querySelector('.menu');menuButton.addEventListener('click',()=>{menu.classList.toggle('show')});window.addEventListener('click',(e)=>{if(!menu.contains(e.target)){menu.classList.remove('show')}});let carrito=JSON.parse(localStorage.getItem('carrito'))||[];document.querySelectorAll('.agregar-carrito').forEach(button=>{button.addEventListener('click',()=>{const nombre=button.getAttribute('data-nombre');const precio=parseFloat(button.getAttribute('data-precio'));const productoExistente=carrito.find(item=>item.nombre===nombre);if(productoExistente){productoExistente.cantidad++;alert(`${nombre} ahora tiene ${productoExistente.cantidad} unidades en el carrito.`)}else{carrito.push({nombre,precio,cantidad:1});alert(`${nombre} añadido al carrito. Precio: $${precio}`)}
-localStorage.setItem('carrito',JSON.stringify(carrito))})});document.getElementById('enviar').addEventListener('click',()=>{const mensaje=document.getElementById('mensaje').value;if(mensaje){document.getElementById('respuesta').innerText='Te responderemos lo más pronto posible.';document.getElementById('mensaje').value=''}});</script>
+<footer>
+    <p>&copy; 2024 F7 Electronics. Todos los derechos reservados.</p>
+</footer>
+
+<script>
+    const menuButton = document.querySelector('.boton-menu');
+    const menu = document.querySelector('.menu');
+    menuButton.addEventListener('click', () => {
+        menu.classList.toggle('show');
+    });
+    window.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
+
+    // Cargar productos dinámicamente desde el servidor
+    async function cargarProductos() {
+        try {
+            const respuesta = await fetch('http://localhost:3000/api/productos');
+            const productos = await respuesta.json();
+            const contenedor = document.getElementById('productos-lista');
+
+            productos.forEach(producto => {
+                const item = document.createElement('div');
+                item.classList.add('producto');
+                item.innerHTML = `
+                    <picture>
+                        <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
+                    </picture>
+                    <h3>${producto.nombre}</h3>
+                    <p>Precio: $${producto.precio}</p>
+                    <button class="agregar-carrito" 
+                        data-nombre="${producto.nombre}" 
+                        data-precio="${producto.precio}">Añadir al Carrito</button>
+                `;
+                contenedor.appendChild(item);
+            });
+
+            configurarCarrito(); // Agregamos funcionalidad al carrito
+        } catch (error) {
+            console.error('Error al cargar los productos:', error);
+        }
+    }
+
+    // Configurar eventos del carrito de compras
+    function configurarCarrito() {
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        document.querySelectorAll('.agregar-carrito').forEach(button => {
+            button.addEventListener('click', () => {
+                const nombre = button.getAttribute('data-nombre');
+                const precio = parseFloat(button.getAttribute('data-precio'));
+                const productoExistente = carrito.find(item => item.nombre === nombre);
+
+                if (productoExistente) {
+                    productoExistente.cantidad++;
+                    alert(`${nombre} ahora tiene ${productoExistente.cantidad} unidades en el carrito.`);
+                } else {
+                    carrito.push({ nombre, precio, cantidad: 1 });
+                    alert(`${nombre} añadido al carrito. Precio: $${precio}`);
+                }
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+            });
+        });
+    }
+
+    document.getElementById('enviar').addEventListener('click', () => {
+        const mensaje = document.getElementById('mensaje').value;
+        if (mensaje) {
+            document.getElementById('respuesta').innerText = 'Te responderemos lo más pronto posible.';
+            document.getElementById('mensaje').value = '';
+        }
+    });
+
+    // Llamar a la función para cargar los productos cuando la página cargue
+    window.onload = cargarProductos;
+</script>
 </body>
 </html>
