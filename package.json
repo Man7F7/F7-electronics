@@ -1,15 +1,30 @@
 {
-  "type": "module",
   "name": "comercio-electronico",
   "version": "1.0.0",
   "description": "Proyecto de comercio electrónico",
   "main": "index.html",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node server.js"
   },
   "devDependencies": {
     "chai": "^5.1.1",
     "mocha": "^10.7.3",
     "node-localstorage": "^3.0.5"
-  }
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.5"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
