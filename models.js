@@ -44,8 +44,9 @@ const Carrito = sequelize.define('Carrito', {
     usuario_id: { type: DataTypes.INTEGER, allowNull: false },
     producto_id: { type: DataTypes.INTEGER, allowNull: false }
 }, {
-    timestamps: false, // Deshabilita los timestamps
+    timestamps: false,
 });
+
 
 // Definir las relaciones
 Usuario.hasMany(Orden);

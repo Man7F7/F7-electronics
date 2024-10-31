@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - F7 Electronics</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>F7 Electronics</h1>
+        </div>
+        <div class="menu">
+            <button class="boton-menu">Menú</button>
+            <div class="contenido_menu">
+                <a href="index.html#productos">Productos</a>
+                <a href="carrito.html">Carrito</a>
+                <a href="index.html#atencion">Atención al Cliente</a>
+                <a href="login.html">Inicio de Sesión</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section id="registro">
+            <h2>Registro</h2>
+            <form id="registro-form">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+                <label for="email">Correo Electrónico:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="contraseña">Contraseña:</label>
+                <input type="password" id="contraseña" name="contraseña" required>
+                <button type="submit">Registrarse</button>
+            </form>
+            <div id="registro-mensaje"></div>
+        </section>
+    </main>
+    <script src="registro.js"></script>
+</body>
+</html>

@@ -114,18 +114,16 @@ router.post('/login', async (req, res) => {
     try {
         const usuario = await Usuario.findOne({ where: { email } });
         if (!usuario) {
-            console.log('Usuario no encontrado');
             return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
         }
 
         const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
         if (contraseñaCorrecta) {
-            res.status(200).json({ message: 'Inicio de sesión exitoso' });
+            res.status(200).json({ message: 'Inicio de sesión exitoso', nombre: usuario.nombre });
         } else {
             res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
         }
     } catch (error) {
-        console.log('Error en el inicio de sesión:', error);
         res.status(500).json({ error: 'Error en el inicio de sesión' });
     }
 });

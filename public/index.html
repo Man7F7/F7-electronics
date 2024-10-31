@@ -18,7 +18,13 @@
             <a href="carrito.html">Carrito</a>
             <a href="#atencion">Atención al Cliente</a>
             <a href="login.html">Inicio de sesión</a>
+            <a href="registro.html">Registrarse</a>
         </div>
+    </div>
+    <div 
+        class="usuario-info"> 
+        <span id="nombre-usuario"></span> 
+        <button id="cerrar-sesion">Cerrar Sesión</button> 
     </div>
 </header>
 
@@ -46,6 +52,22 @@
 </footer>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nombreUsuario = sessionStorage.getItem('nombreUsuario');
+        if (nombreUsuario) {
+            document.getElementById('nombre-usuario').innerText = `Hola, ${nombreUsuario}`;
+            document.getElementById('cerrar-sesion').style.display = 'block';
+        } else {
+            document.getElementById('cerrar-sesion').style.display = 'none';
+        }
+
+        document.getElementById('cerrar-sesion').addEventListener('click', () => {
+            sessionStorage.removeItem('nombreUsuario');
+            window.location.href = 'login.html';
+        });
+    });
+
+    // Funcionalidad de menú
     const menuButton = document.querySelector('.boton-menu');
     const menu = document.querySelector('.menu');
     menuButton.addEventListener('click', () => {
@@ -63,7 +85,6 @@
             const respuesta = await fetch('http://localhost:3000/api/productos');
             const productos = await respuesta.json();
             const contenedor = document.getElementById('productos-lista');
-
             productos.forEach(producto => {
                 const item = document.createElement('div');
                 item.classList.add('producto');
@@ -73,13 +94,12 @@
                     </picture>
                     <h3>${producto.nombre}</h3>
                     <p>Precio: $${producto.precio}</p>
-                    <button class="agregar-carrito" 
-                        data-nombre="${producto.nombre}" 
+                    <button class="agregar-carrito"
+                        data-nombre="${producto.nombre}"
                         data-precio="${producto.precio}">Añadir al Carrito</button>
                 `;
                 contenedor.appendChild(item);
             });
-
             configurarCarrito(); // Agregamos funcionalidad al carrito
         } catch (error) {
             console.error('Error al cargar los productos:', error);
@@ -94,7 +114,6 @@
                 const nombre = button.getAttribute('data-nombre');
                 const precio = parseFloat(button.getAttribute('data-precio'));
                 const productoExistente = carrito.find(item => item.nombre === nombre);
-
                 if (productoExistente) {
                     productoExistente.cantidad++;
                     alert(`${nombre} ahora tiene ${productoExistente.cantidad} unidades en el carrito.`);
