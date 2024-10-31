@@ -15,7 +15,7 @@ document.getElementById('registro-form').addEventListener('submit', async (e) =>
 
         if (respuesta.ok) {
             document.getElementById('registro-mensaje').innerText = 'Registro exitoso';
-            // Redirigir a la página de inicio de sesión
+            
             window.location.href = 'login.html';
         } else {
             document.getElementById('registro-mensaje').innerText = 'Error en el registro';

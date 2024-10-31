@@ -47,19 +47,19 @@ const Carrito = sequelize.define('Carrito', {
     timestamps: false,
 });
 
+// Definir las relaciones correctamente
+Usuario.hasMany(Carrito);
+Carrito.belongsTo(Usuario, { foreignKey: 'usuario_id' });
 
-// Definir las relaciones
+Producto.hasMany(Carrito);
+Carrito.belongsTo(Producto, { foreignKey: 'producto_id' });
+
 Usuario.hasMany(Orden);
 Orden.belongsTo(Usuario);
-
-Usuario.hasMany(Carrito);
-Carrito.belongsTo(Usuario);
 
 Orden.hasMany(Carrito);
 Carrito.belongsTo(Orden);
 
-Producto.hasMany(Carrito);
-Carrito.belongsTo(Producto);
 
 // Sincronizar la base de datos
 const initDb = async () => {

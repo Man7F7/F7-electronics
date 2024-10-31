@@ -74,6 +74,23 @@ router.post('/carrito', async (req, res) => {
     }
 });
 
+// Ruta para obtener los productos en el carrito de un usuario
+router.get('/carrito/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const itemsCarrito = await Carrito.findAll({
+            where: { usuario_id },
+            include: {
+                model: Producto,
+                attributes: ['id', 'nombre', 'precio', 'imagen']
+            }
+        });
+        res.json(itemsCarrito);
+    } catch (error) {
+        console.error('Error al obtener el carrito:', error);
+        res.status(500).json({ error: 'Error al obtener el carrito' });
+    }
+});
 // Ruta para eliminar un producto del carrito
 router.delete('/carrito/:id', async (req, res) => {
     const { id } = req.params;
@@ -91,20 +108,6 @@ router.delete('/carrito/:id', async (req, res) => {
     }
 });
 
-// Ruta para obtener los productos en el carrito de un usuario
-router.get('/carrito/:usuario_id', async (req, res) => {
-    const { usuario_id } = req.params;
-    try {
-        const itemsCarrito = await Carrito.findAll({
-            where: { usuario_id },
-            include: [Producto] // Incluir información del producto
-        });
-        res.json(itemsCarrito);
-    } catch (error) {
-        console.error('Error al obtener el carrito:', error);
-        res.status(500).json({ error: 'Error al obtener el carrito' });
-    }
-});
 
 // -------------------- Rutas de Autenticación --------------------
 // Ruta para el inicio de sesión
@@ -119,7 +122,7 @@ router.post('/login', async (req, res) => {
 
         const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
         if (contraseñaCorrecta) {
-            res.status(200).json({ message: 'Inicio de sesión exitoso', nombre: usuario.nombre });
+            res.status(200).json({ message: 'Inicio de sesión exitoso', nombre: usuario.nombre, id: usuario.id });
         } else {
             res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
         }

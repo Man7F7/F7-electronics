@@ -11,21 +11,19 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         });
 
         const datos = await respuesta.json();
-        console.log('Respuesta del servidor:', datos); // Verificar los datos recibidos
 
         if (respuesta.ok) {
             sessionStorage.setItem('nombreUsuario', datos.nombre); // Guardar el nombre del usuario
+            sessionStorage.setItem('usuarioID', datos.id); // Guardar el ID del usuario
             document.getElementById('login-mensaje').innerText = 'Inicio de sesión exitoso';
             window.location.href = 'index.html';
         } else {
             document.getElementById('login-mensaje').innerText = 'Correo electrónico o contraseña incorrectos';
         }
     } catch (error) {
-        console.log('Error en el inicio de sesión:', error);
         document.getElementById('login-mensaje').innerText = 'Error en el inicio de sesión';
     }
 });
-
 
 //Desplegar menu
 const menuButton = document.querySelector('.boton-menu');

@@ -47,13 +47,11 @@
     </section>
 </main>
 
-<footer>
-    <p>&copy; 2024 F7 Electronics. Todos los derechos reservados.</p>
-</footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const nombreUsuario = sessionStorage.getItem('nombreUsuario');
+        const usuarioID = sessionStorage.getItem('usuarioID');
         if (nombreUsuario) {
             document.getElementById('nombre-usuario').innerText = `Hola, ${nombreUsuario}`;
             document.getElementById('cerrar-sesion').style.display = 'block';
@@ -63,8 +61,11 @@
 
         document.getElementById('cerrar-sesion').addEventListener('click', () => {
             sessionStorage.removeItem('nombreUsuario');
+            sessionStorage.removeItem('usuarioID');
             window.location.href = 'login.html';
         });
+
+        cargarProductos(); // Cargar productos cuando la página cargue
     });
 
     // Funcionalidad de menú
@@ -95,12 +96,12 @@
                     <h3>${producto.nombre}</h3>
                     <p>Precio: $${producto.precio}</p>
                     <button class="agregar-carrito"
-                        data-nombre="${producto.nombre}"
+                        data-producto_id="${producto.id}"
                         data-precio="${producto.precio}">Añadir al Carrito</button>
                 `;
                 contenedor.appendChild(item);
             });
-            configurarCarrito(); // Agregamos funcionalidad al carrito
+            configurarCarrito();
         } catch (error) {
             console.error('Error al cargar los productos:', error);
         }
@@ -108,20 +109,29 @@
 
     // Configurar eventos del carrito de compras
     function configurarCarrito() {
-        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         document.querySelectorAll('.agregar-carrito').forEach(button => {
-            button.addEventListener('click', () => {
-                const nombre = button.getAttribute('data-nombre');
-                const precio = parseFloat(button.getAttribute('data-precio'));
-                const productoExistente = carrito.find(item => item.nombre === nombre);
-                if (productoExistente) {
-                    productoExistente.cantidad++;
-                    alert(`${nombre} ahora tiene ${productoExistente.cantidad} unidades en el carrito.`);
-                } else {
-                    carrito.push({ nombre, precio, cantidad: 1 });
-                    alert(`${nombre} añadido al carrito. Precio: $${precio}`);
+            button.addEventListener('click', async () => {
+                const usuario_id = sessionStorage.getItem('usuarioID');
+                const producto_id = button.getAttribute('data-producto_id');
+                const cantidad = 1; 
+
+                console.log(`Usuario ID: ${usuario_id}, Producto ID: ${producto_id}, Cantidad: ${cantidad}`);
+
+                try {
+                    const respuesta = await fetch('/carrito', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ usuario_id, producto_id, cantidad })
+                    });
+
+                    if (respuesta.ok) {
+                        alert('Producto añadido al carrito');
+                    } else {
+                        alert('Error al añadir al carrito');
+                    }
+                } catch (error) {
+                    console.error('Error al añadir al carrito:', error);
                 }
-                localStorage.setItem('carrito', JSON.stringify(carrito));
             });
         });
     }
@@ -133,9 +143,7 @@
             document.getElementById('mensaje').value = '';
         }
     });
-
-    // Llamar a la función para cargar los productos cuando la página cargue
-    window.onload = cargarProductos;
 </script>
+
 </body>
 </html>

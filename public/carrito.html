@@ -7,36 +7,87 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-    <div class="logo">
-        <h1>F7 Electronics</h1>
-    </div>
-    <div class="menu">
-        <button class="boton-menu">Menú</button>
-        <div class="contenido_menu">
-            <a href="index.html#productos">Productos</a>
-            <a href="carrito.html">Carrito</a>
-            <a href="index.html#atencion">Atención al Cliente</a>
+    <header>
+        <div class="logo">
+            <h1>F7 Electronics</h1>
         </div>
-    </div>
-</header>
-
-<main>
-    <section id="carrito">
-        <h2>Tu Carrito</h2>
-        <div class="carrito">
-            <div id="productos-carrito"></div>
-            <div class="total-carrito"></div>
-            <button class="finalizar-compra">Finalizar Compra</button>
+        <div class="menu">
+            <button class="boton-menu">Menú</button>
+            <div class="contenido_menu">
+                <a href="index.html#productos">Productos</a>
+                <a href="carrito.html">Carrito</a>
+                <a href="index.html#atencion">Atención al Cliente</a>
+            </div>
         </div>
-    </section>
-</main>
-
-<script>const carrito=JSON.parse(localStorage.getItem('carrito'))||[];const productosCarritoDiv=document.getElementById('productos-carrito');const totalCarritoDiv=document.querySelector('.total-carrito');let total=0;carrito.forEach((item,index)=>{const productoDiv=document.createElement('div');productoDiv.classList.add('producto-carrito');productoDiv.innerHTML=`
-    <h3>${item.nombre}</h3>
-    <p>Precio: $${item.precio}</p>
-    <p>Cantidad: ${item.cantidad}</p>
-    <button class="eliminar-producto" data-index="${index}">Eliminar</button>
-`;productosCarritoDiv.appendChild(productoDiv);total+=item.precio*item.cantidad});totalCarritoDiv.innerText=`Total: $${total}`;productosCarritoDiv.addEventListener('click',(e)=>{if(e.target.classList.contains('eliminar-producto')){const index=e.target.getAttribute('data-index');carrito.splice(index,1);localStorage.setItem('carrito',JSON.stringify(carrito));location.reload()}});document.querySelector('.finalizar-compra').addEventListener('click',()=>{alert('Compra finalizada. Gracias por tu compra!');localStorage.removeItem('carrito');location.reload()});const menuButton=document.querySelector('.boton-menu');const menu=document.querySelector('.menu');menuButton.addEventListener('click',()=>{menu.classList.toggle('show')});window.addEventListener('click',(e)=>{if(!menu.contains(e.target)){menu.classList.remove('show')}});</script>
+    </header>
+    <main>
+        <section id="carrito">
+            <h2>Tu Carrito</h2>
+            <div class="carrito">
+                <div id="productos-carrito"></div>
+                <div class="total-carrito"></div>
+                <button class="finalizar-compra">Finalizar Compra</button>
+            </div>
+        </section>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const usuario_id = sessionStorage.getItem('usuarioID');
+    
+            try {
+                const respuesta = await fetch(`/carrito/${usuario_id}`);
+                const carrito = await respuesta.json();
+    
+                const productosCarritoDiv = document.getElementById('productos-carrito');
+                const totalCarritoDiv = document.querySelector('.total-carrito');
+                let total = 0;
+    
+                carrito.forEach(item => {
+                    if (item.Producto) {
+                        const productoDiv = document.createElement('div');
+                        productoDiv.classList.add('producto-carrito');
+                        productoDiv.innerHTML = `
+                            <h3>${item.Producto.nombre}</h3>
+                            <p>Precio: $${item.Producto.precio}</p>
+                            <p>Cantidad: ${item.cantidad}</p>
+                            <button class="eliminar-producto" data-id="${item.id}">Eliminar</button>
+                        `;
+                        productosCarritoDiv.appendChild(productoDiv);
+                        total += item.Producto.precio * item.cantidad;
+                    }
+                });
+    
+                totalCarritoDiv.innerText = `Total: $${total}`;
+    
+                productosCarritoDiv.addEventListener('click', async (e) => {
+                    if (e.target.classList.contains('eliminar-producto')) {
+                        const id = e.target.getAttribute('data-id');
+                        const respuesta = await fetch(`/carrito/${id}`, {
+                            method: 'DELETE'
+                        });
+                        if (respuesta.ok) {
+                            e.target.parentElement.remove();
+                            location.reload();
+                        } else {
+                            alert('Error al eliminar el producto del carrito');
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error al obtener el carrito:', error);
+            }
+        });
+    
+        const menuButton = document.querySelector('.boton-menu');
+        const menu = document.querySelector('.menu');
+        menuButton.addEventListener('click', () => {
+            menu.classList.toggle('show');
+        });
+        window.addEventListener('click', (e) => {
+            if (!menu.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
