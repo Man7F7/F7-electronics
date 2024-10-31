@@ -1,16 +1,16 @@
-const express = require('express'); // Cambiado a express
-const { sequelize } = require('./models'); // Asegúrate de que la instancia sequelize esté exportada correctamente en tu modelo
+const express = require('express');
+const bodyParser = require('body-parser');
+const { sequelize } = require('./models');
 const rutas = require('./routes');
 const app = express();
 const PORT = 3000;
 
-// Middleware para servir archivos estáticos
-app.use(express.static('public'));
+app.use(bodyParser.json()); // Procesar JSON
+app.use(bodyParser.urlencoded({ extended: true })); // Procesar datos de formularios
 
-// Middleware para las rutas
+app.use(express.static('public'));
 app.use(rutas);
 
-// Verificar conexión con la base de datos
 sequelize.authenticate()
     .then(() => {
         console.log('Conexión con la base de datos exitosa');

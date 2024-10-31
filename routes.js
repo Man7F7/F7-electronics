@@ -1,9 +1,9 @@
 const express = require('express');
 const { Orden, Producto, Carrito, Usuario } = require('./models');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 
 // -------------------- Rutas de Productos --------------------
-
 // Ruta para obtener todos los productos
 router.get('/api/productos', async (req, res) => {
     try {
@@ -15,32 +15,28 @@ router.get('/api/productos', async (req, res) => {
     }
 });
 
-module.exports = router;
-
 // -------------------- Rutas de Usuarios --------------------
-
 // Obtener todos los usuarios
 router.get('/usuarios', async (req, res) => {
-  try {
-    const usuarios = await Usuario.findAll();
-    res.json(usuarios);
-  } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los usuarios' });
-  }
+    try {
+        const usuarios = await Usuario.findAll();
+        res.json(usuarios);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los usuarios' });
+    }
 });
 
 // Registrar un nuevo usuario
 router.post('/usuarios', async (req, res) => {
-  try {
-    const nuevoUsuario = await Usuario.create(req.body);
-    res.status(201).json(nuevoUsuario);
-  } catch (error) {
-    res.status(400).json({ error: 'Error al registrar el usuario' });
-  }
+    try {
+        const nuevoUsuario = await Usuario.create(req.body);
+        res.status(201).json(nuevoUsuario);
+    } catch (error) {
+        res.status(400).json({ error: 'Error al registrar el usuario' });
+    }
 });
 
 // -------------------- Rutas de Órdenes --------------------
-
 // Crear una nueva orden
 router.post('/ordenes', async (req, res) => {
     try {
@@ -63,6 +59,7 @@ router.get('/ordenes', async (req, res) => {
     }
 });
 
+// -------------------- Rutas de Carrito --------------------
 // Ruta para agregar un producto al carrito
 router.post('/carrito', async (req, res) => {
     try {
@@ -107,5 +104,34 @@ router.delete('/carrito/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+// -------------------- Rutas de Autenticación --------------------
+// Ruta para el inicio de sesión
+router.post('/login', async (req, res) => {
+    const { email, contraseña } = req.body;
 
+    try {
+        const usuario = await Usuario.findOne({ where: { email } });
+        if (!usuario) {
+            console.log('Usuario no encontrado');
+            return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
+        }
+
+        console.log(`Contraseña ingresada: ${contraseña}`);
+        console.log(`Contraseña almacenada: ${usuario.contraseña}`);
+
+        const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
+        console.log(`Contraseña correcta: ${contraseñaCorrecta}`);
+
+        if (contraseñaCorrecta) {
+            res.status(200).json({ message: 'Inicio de sesión exitoso' });
+        } else {
+            res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
+        }
+    } catch (error) {
+        console.log('Error en el inicio de sesión:', error);
+        res.status(500).json({ error: 'Error en el inicio de sesión' });
+    }
+});
+
+
+module.exports = router;
