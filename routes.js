@@ -29,9 +29,11 @@ router.get('/usuarios', async (req, res) => {
 // Registrar un nuevo usuario
 router.post('/usuarios', async (req, res) => {
     try {
-        const nuevoUsuario = await Usuario.create(req.body);
+        const { nombre, email, contraseña } = req.body;
+        const nuevoUsuario = await Usuario.create({ nombre, email, contraseña });
         res.status(201).json(nuevoUsuario);
     } catch (error) {
+        console.error('Error al registrar el usuario:', error);
         res.status(400).json({ error: 'Error al registrar el usuario' });
     }
 });
@@ -51,7 +53,7 @@ router.post('/ordenes', async (req, res) => {
 router.get('/ordenes', async (req, res) => {
     try {
         const ordenes = await Orden.findAll({
-            include: [Usuario, Producto], // Incluir relaciones
+            include: [Usuario, Producto] // Incluir relaciones
         });
         res.json(ordenes);
     } catch (error) {
@@ -63,27 +65,12 @@ router.get('/ordenes', async (req, res) => {
 // Ruta para agregar un producto al carrito
 router.post('/carrito', async (req, res) => {
     try {
-        const { orden_id, producto_id, cantidad } = req.body;
-        const nuevoItem = await Carrito.create({ orden_id, producto_id, cantidad });
+        const { usuario_id, producto_id, cantidad } = req.body;
+        const nuevoItem = await Carrito.create({ usuario_id, producto_id, cantidad });
         res.status(201).json(nuevoItem);
     } catch (error) {
         console.error('Error al agregar al carrito:', error);
         res.status(400).json({ error: 'Error al agregar al carrito' });
-    }
-});
-
-// Ruta para obtener los productos en el carrito de un usuario
-router.get('/carrito/:orden_id', async (req, res) => {
-    const { orden_id } = req.params;
-    try {
-        const itemsCarrito = await Carrito.findAll({
-            where: { orden_id },
-            include: [Producto], // Incluir información del producto
-        });
-        res.json(itemsCarrito);
-    } catch (error) {
-        console.error('Error al obtener el carrito:', error);
-        res.status(500).json({ error: 'Error al obtener el carrito' });
     }
 });
 
@@ -104,6 +91,21 @@ router.delete('/carrito/:id', async (req, res) => {
     }
 });
 
+// Ruta para obtener los productos en el carrito de un usuario
+router.get('/carrito/:usuario_id', async (req, res) => {
+    const { usuario_id } = req.params;
+    try {
+        const itemsCarrito = await Carrito.findAll({
+            where: { usuario_id },
+            include: [Producto] // Incluir información del producto
+        });
+        res.json(itemsCarrito);
+    } catch (error) {
+        console.error('Error al obtener el carrito:', error);
+        res.status(500).json({ error: 'Error al obtener el carrito' });
+    }
+});
+
 // -------------------- Rutas de Autenticación --------------------
 // Ruta para el inicio de sesión
 router.post('/login', async (req, res) => {
@@ -116,12 +118,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
         }
 
-        console.log(`Contraseña ingresada: ${contraseña}`);
-        console.log(`Contraseña almacenada: ${usuario.contraseña}`);
-
         const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
-        console.log(`Contraseña correcta: ${contraseñaCorrecta}`);
-
         if (contraseñaCorrecta) {
             res.status(200).json({ message: 'Inicio de sesión exitoso' });
         } else {
@@ -132,6 +129,5 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Error en el inicio de sesión' });
     }
 });
-
 
 module.exports = router;

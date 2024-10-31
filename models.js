@@ -41,6 +41,8 @@ const Orden = sequelize.define('Orden', {
 // Definición del modelo de Carrito
 const Carrito = sequelize.define('Carrito', {
     cantidad: { type: DataTypes.INTEGER, allowNull: false },
+    usuario_id: { type: DataTypes.INTEGER, allowNull: false },
+    producto_id: { type: DataTypes.INTEGER, allowNull: false }
 }, {
     timestamps: false, // Deshabilita los timestamps
 });
@@ -48,14 +50,19 @@ const Carrito = sequelize.define('Carrito', {
 // Definir las relaciones
 Usuario.hasMany(Orden);
 Orden.belongsTo(Usuario);
+
+Usuario.hasMany(Carrito);
+Carrito.belongsTo(Usuario);
+
 Orden.hasMany(Carrito);
 Carrito.belongsTo(Orden);
+
 Producto.hasMany(Carrito);
 Carrito.belongsTo(Producto);
 
 // Sincronizar la base de datos
 const initDb = async () => {
-    await sequelize.sync({ alter: true }); // Asegura que los cambios se reflejen en la base de datos
+    await sequelize.sync({ alter: true }); // Actualiza la base de datos con los nuevos campos
     console.log("Base de datos sincronizada");
 };
 initDb();
