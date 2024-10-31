@@ -14,7 +14,7 @@ const Producto = sequelize.define('Producto', {
     imagen: { type: DataTypes.STRING, allowNull: false },
 }, {
     tableName: 'productos',
-    timestamps: false, // Deshabilita los timestamps
+    timestamps: false, 
 });
 
 // Definición del modelo de Usuario
@@ -23,7 +23,7 @@ const Usuario = sequelize.define('Usuario', {
     email: { type: DataTypes.STRING, unique: true, allowNull: false },
     contraseña: { type: DataTypes.STRING, allowNull: false },
 }, {
-    timestamps: false, // Deshabilita los timestamps
+    timestamps: false, 
     hooks: {
         beforeCreate: async (user) => {
             user.contraseña = await bcrypt.hash(user.contraseña, 10);
@@ -35,7 +35,7 @@ const Usuario = sequelize.define('Usuario', {
 const Orden = sequelize.define('Orden', {
     total: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
 }, {
-    timestamps: false, // Deshabilita los timestamps
+    timestamps: false, 
 });
 
 // Definición del modelo de Carrito
@@ -63,7 +63,7 @@ Carrito.belongsTo(Orden);
 
 // Sincronizar la base de datos
 const initDb = async () => {
-    await sequelize.sync({ alter: true }); // Actualiza la base de datos con los nuevos campos
+    await sequelize.sync({ alter: true }); 
     console.log("Base de datos sincronizada");
 };
 initDb();

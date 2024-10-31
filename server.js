@@ -5,12 +5,17 @@ const rutas = require('./routes');
 const app = express();
 const PORT = 3000;
 
-app.use(bodyParser.json()); // Procesar JSON
-app.use(bodyParser.urlencoded({ extended: true })); // Procesar datos de formularios
+// Configuracion de body-parser para manejar datos JSON y URL encoded
+app.use(bodyParser.json()); 
+app.use(bodyParser.urlencoded({ extended: true })); 
 
+// Middleware para servir archivos estáticos
 app.use(express.static('public'));
+
+// Middleware para las rutas
 app.use(rutas);
 
+// Verificar conexión con la base de datos y levantar el servidor
 sequelize.authenticate()
     .then(() => {
         console.log('Conexión con la base de datos exitosa');

@@ -37,7 +37,27 @@ router.post('/usuarios', async (req, res) => {
         res.status(400).json({ error: 'Error al registrar el usuario' });
     }
 });
+// -------------------- Rutas de Autenticación --------------------
+// Ruta para el inicio de sesión
+router.post('/login', async (req, res) => {
+    const { email, contraseña } = req.body;
 
+    try {
+        const usuario = await Usuario.findOne({ where: { email } });
+        if (!usuario) {
+            return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
+        }
+
+        const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
+        if (contraseñaCorrecta) {
+            res.status(200).json({ message: 'Inicio de sesión exitoso', nombre: usuario.nombre, id: usuario.id });
+        } else {
+            res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error en el inicio de sesión' });
+    }
+});
 // -------------------- Rutas de Órdenes --------------------
 // Crear una nueva orden
 router.post('/ordenes', async (req, res) => {
@@ -53,7 +73,7 @@ router.post('/ordenes', async (req, res) => {
 router.get('/ordenes', async (req, res) => {
     try {
         const ordenes = await Orden.findAll({
-            include: [Usuario, Producto] // Incluir relaciones
+            include: [Usuario, Producto]
         });
         res.json(ordenes);
     } catch (error) {
@@ -109,26 +129,6 @@ router.delete('/carrito/:id', async (req, res) => {
 });
 
 
-// -------------------- Rutas de Autenticación --------------------
-// Ruta para el inicio de sesión
-router.post('/login', async (req, res) => {
-    const { email, contraseña } = req.body;
 
-    try {
-        const usuario = await Usuario.findOne({ where: { email } });
-        if (!usuario) {
-            return res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
-        }
-
-        const contraseñaCorrecta = await bcrypt.compare(contraseña, usuario.contraseña);
-        if (contraseñaCorrecta) {
-            res.status(200).json({ message: 'Inicio de sesión exitoso', nombre: usuario.nombre, id: usuario.id });
-        } else {
-            res.status(401).json({ error: 'Correo electrónico o contraseña incorrectos' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: 'Error en el inicio de sesión' });
-    }
-});
 
 module.exports = router;
